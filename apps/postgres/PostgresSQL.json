@@ -1,0 +1,1177 @@
+{
+    "imports": [
+        "github.com/project-flogo/flow",
+        "git.tibco.com/git/product/ipaas/wi-postgres.git/src/app/PostgreSQL/activity/insert",
+        "github.com/project-flogo/contrib/activity/actreturn",
+        "git.tibco.com/git/product/ipaas/wi-postgres.git/src/app/PostgreSQL/activity/query",
+        "git.tibco.com/git/product/ipaas/wi-contrib.git/contributions/General/activity/log",
+        "git.tibco.com/git/product/ipaas/wi-postgres.git/src/app/PostgreSQL/activity/delete",
+        "git.tibco.com/git/product/ipaas/wi-contrib.git/contributions/General/trigger/rest"
+    ],
+    "name": "PostgresSQL",
+    "description": " ",
+    "version": "1.1.0",
+    "type": "flogo:app",
+    "appModel": "1.1.0",
+    "feVersion": "2.6.0",
+    "triggers": [
+        {
+            "ref": "#rest",
+            "name": "ReceiveHTTPMessage",
+            "description": "",
+            "settings": {
+                "port": 9999,
+                "secureConnection": false,
+                "serverKey": "",
+                "caCertificate": "",
+                "swagger": ""
+            },
+            "id": "ReceiveHTTPMessage",
+            "handlers": [
+                {
+                    "description": "",
+                    "settings": {
+                        "Method": "POST",
+                        "Path": "/db/record",
+                        "OutputValidation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:Insert"
+                        },
+                        "input": {
+                            "body": {
+                                "mapping": {
+                                    "records": {
+                                        "@foreach($.body.records)": {
+                                            "=": "$loop"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "output": {
+                            "code": "=$.code",
+                            "message": "=$.message"
+                        }
+                    },
+                    "reply": {
+                        "code": 200,
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "data": {
+                                "type": "json",
+                                "value": null,
+                                "fe_metadata": {
+                                    "metadata": "",
+                                    "value": ""
+                                }
+                            }
+                        },
+                        "output": {
+                            "headers": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
+                                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
+                            },
+                            "body": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"first_name\":{\"type\":\"string\"},\"last_name\":{\"type\":\"string\"},\"id\":{\"type\":\"number\"},\"company\":{\"type\":\"string\"}}}}}}",
+                                "fe_metadata": "{\n    \"records\":[\n        {\n            \"first_name\":\"\",\n            \"last_name\":\"\",\n            \"id\":0,\n            \"company\":\"\"\n        }\n    ]\n}"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "",
+                    "settings": {
+                        "Method": "GET",
+                        "Path": "/db/record",
+                        "OutputValidation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:Query"
+                        },
+                        "input": {
+                            "headers": "=$.headers"
+                        },
+                        "output": {
+                            "code": "=$.code",
+                            "data": "=$.data"
+                        }
+                    },
+                    "reply": {
+                        "code": 200,
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "data": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"first_name\":{\"type\":\"string\"},\"last_name\":{\"type\":\"string\"},\"id\":{\"type\":\"number\"},\"company\":{\"type\":\"string\"}}}}}}",
+                                "fe_metadata": "{\n    \"records\": [\n        {\n       \"first_name\": \"\",\n       \"last_name\": \"\",\n       \"id\": 0,\n       \"company\": \"\"\n        }\n    ]\n}"
+                            }
+                        },
+                        "output": {
+                            "headers": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
+                                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
+                            },
+                            "body": {
+                                "type": "json",
+                                "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"first_name\":{\"type\":\"string\"},\"last_name\":{\"type\":\"string\"},\"id\":{\"type\":\"number\"},\"company\":{\"type\":\"string\"}}}}}}",
+                                "fe_metadata": "{\n    \"records\": [\n        {\n       \"first_name\": \"\",\n       \"last_name\": \"\",\n       \"id\": 0,\n       \"company\": \"\"\n        }\n    ]\n}"
+                            }
+                        }
+                    }
+                },
+                {
+                    "description": "",
+                    "settings": {
+                        "Method": "DELETE",
+                        "Path": "/db/record",
+                        "OutputValidation": false
+                    },
+                    "action": {
+                        "ref": "github.com/project-flogo/flow",
+                        "settings": {
+                            "flowURI": "res://flow:Delete"
+                        },
+                        "input": {
+                            "queryParams": "=$.queryParams"
+                        },
+                        "output": {
+                            "message": "=$.message",
+                            "code": "=$.code"
+                        }
+                    },
+                    "reply": {
+                        "code": 200,
+                        "message": ""
+                    },
+                    "schemas": {
+                        "reply": {
+                            "data": {
+                                "type": "json",
+                                "value": null,
+                                "fe_metadata": {
+                                    "metadata": "",
+                                    "value": ""
+                                }
+                            }
+                        },
+                        "output": {
+                            "queryParams": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"}},\"required\":[]}",
+                                "fe_metadata": "[{\"parameterName\":\"id\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"isEditable\":true}]"
+                            },
+                            "headers": {
+                                "type": "json",
+                                "value": "{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}",
+                                "fe_metadata": "[{\"parameterName\":\"Accept\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Charset\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Accept-Encoding\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Type\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Content-Length\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Connection\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Cookie\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false},{\"parameterName\":\"Pragma\",\"type\":\"string\",\"repeating\":\"false\",\"required\":\"false\",\"visible\":false}]"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "resources": [
+        {
+            "id": "flow:Insert",
+            "data": {
+                "name": "Insert",
+                "description": "",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "PostgreSQLInsert",
+                        "to": "Return",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "PostgreSQLInsert",
+                        "to": "Return1",
+                        "type": "error"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "PostgreSQLInsert",
+                        "name": "PostgreSQLInsert",
+                        "activity": {
+                            "ref": "#insert",
+                            "input": {
+                                "Connection": {
+                                    "type": "flogo:connector",
+                                    "version": "2.0.1",
+                                    "name": "postgresql-connector",
+                                    "hashTags": [],
+                                    "inputMappings": {},
+                                    "outputMappings": {},
+                                    "iteratorMappings": {},
+                                    "title": "PostgreSQL Connector",
+                                    "description": "Connector to connect to a PostgreSQL database server",
+                                    "ref": "git.tibco.com/git/product/ipaas/wi-postgres.git/src/app/PostgreSQL/connector/connection",
+                                    "settings": [
+                                        {
+                                            "name": "name",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Connection Name",
+                                                "visible": true
+                                            },
+                                            "value": "LocalDB"
+                                        },
+                                        {
+                                            "name": "description",
+                                            "type": "string",
+                                            "display": {
+                                                "name": "Description",
+                                                "visible": true
+                                            },
+                                            "value": ""
+                                        },
+                                        {
+                                            "name": "host",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Host",
+                                                "description": "PostgreSQL Database Host name",
+                                                "type": "string",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Host\"]"
+                                        },
+                                        {
+                                            "name": "port",
+                                            "type": "integer",
+                                            "required": true,
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Port\"]",
+                                            "display": {
+                                                "name": "Port",
+                                                "description": "PostgreSQL Database Port",
+                                                "type": "integer",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            }
+                                        },
+                                        {
+                                            "name": "databaseName",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Database Name",
+                                                "description": "Name of the Database",
+                                                "type": "string",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Database_Name\"]"
+                                        },
+                                        {
+                                            "name": "user",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "User",
+                                                "description": "Name of the Database User",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.User\"]"
+                                        },
+                                        {
+                                            "name": "password",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Password",
+                                                "description": "PostgreSQL Database Port",
+                                                "type": "password",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Password\"]"
+                                        }
+                                    ],
+                                    "outputs": [],
+                                    "inputs": [],
+                                    "handler": {
+                                        "settings": []
+                                    },
+                                    "reply": [],
+                                    "s3Prefix": "Tibco",
+                                    "key": "Tibco/PostgreSQL/connector/connection/connector.json",
+                                    "display": {
+                                        "description": "Connector to connect to a PostgreSQL database server",
+                                        "category": "PostgreSQL",
+                                        "visible": true,
+                                        "smallIcon": "icons/ic-postgres-connection@2x.png",
+                                        "largeIcon": "icons/ic-postgres-connection@3x.png"
+                                    },
+                                    "actions": [
+                                        {
+                                            "name": "Connect"
+                                        }
+                                    ],
+                                    "feature": {},
+                                    "propertyMap": {},
+                                    "keyfield": "name",
+                                    "isValid": true,
+                                    "lastUpdatedTime": 1559943517538,
+                                    "createdTime": 1559943517538,
+                                    "user": "flogo",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "9bd48420-896c-11e9-99bb-67644a83e36d",
+                                    "connectorName": " ",
+                                    "connectorDescription": " "
+                                },
+                                "QueryName": "",
+                                "Query": "INSERT INTO demo (first_name, last_name, id, company) VALUES (?first_name, ?last_name, ?id, ?company);",
+                                "Fields": "[{\"FieldName\":\"company\",\"Type\":\"TEXT\",\"Selected\":false,\"Parameter\":true,\"isEditable\":false,\"Value\":true},{\"FieldName\":\"first_name\",\"Type\":\"TEXT\",\"Selected\":false,\"Parameter\":true,\"isEditable\":false,\"Value\":true},{\"FieldName\":\"last_name\",\"Type\":\"TEXT\",\"Selected\":false,\"Parameter\":true,\"isEditable\":false,\"Value\":true},{\"FieldName\":\"id\",\"Type\":\"INT4\",\"Selected\":false,\"Parameter\":true,\"isEditable\":false,\"Value\":true}]",
+                                "State": "9bd48420-896c-11e9-99bb-67644a83e36dINSERT INTO demo (first_name, last_name, id, company) VALUES (?first_name, ?last_name, ?id, ?company);",
+                                "input": {
+                                    "mapping": {
+                                        "values": {
+                                            "@foreach($flow.body.records)": {
+                                                "=": "$loop"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "schemas": {
+                                "input": {
+                                    "input": {
+                                        "type": "json",
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"values\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"company\":{\"type\":\"string\"},\"first_name\":{\"type\":\"string\"},\"last_name\":{\"type\":\"string\"},\"id\":{\"type\":\"integer\"}}}},\"parameters\":{\"type\":\"object\",\"properties\":{}}}}",
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"values\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"company\":{\"type\":\"string\"},\"first_name\":{\"type\":\"string\"},\"last_name\":{\"type\":\"string\"},\"id\":{\"type\":\"integer\"}}}},\"parameters\":{\"type\":\"object\",\"properties\":{}}}}"
+                                    }
+                                },
+                                "output": {
+                                    "Output": {
+                                        "type": "json",
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{}}}}}",
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{}}}}}"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "code": 200,
+                                    "message": "Records successfully inserted"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return1",
+                        "name": "Return1",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "code": 400,
+                                    "message": "Error inserting records into database"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "headers",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}}"
+                            }
+                        },
+                        {
+                            "name": "body",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"first_name\":{\"type\":\"string\"},\"last_name\":{\"type\":\"string\"},\"id\":{\"type\":\"number\"},\"company\":{\"type\":\"string\"}}}}}"
+                            }
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "code",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"ReceiveHTTPMessage\",\"properties\":{\"headers\":{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]},\"body\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"first_name\":{\"type\":\"string\"},\"last_name\":{\"type\":\"string\"},\"id\":{\"type\":\"number\"},\"company\":{\"type\":\"string\"}}}}}}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"code\":{\"type\":\"integer\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false}},\"required\":[]}"
+                    }
+                },
+                "explicitReply": true
+            }
+        },
+        {
+            "id": "flow:Query",
+            "data": {
+                "name": "Query",
+                "description": "",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "PostgreSQLQuery",
+                        "to": "Return",
+                        "type": "default"
+                    },
+                    {
+                        "id": 2,
+                        "from": "PostgreSQLQuery",
+                        "to": "Return1",
+                        "type": "error"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "PostgreSQLQuery",
+                        "name": "PostgreSQLQuery",
+                        "activity": {
+                            "ref": "#query",
+                            "input": {
+                                "Connection": {
+                                    "type": "flogo:connector",
+                                    "version": "2.0.1",
+                                    "name": "postgresql-connector",
+                                    "hashTags": [],
+                                    "inputMappings": {},
+                                    "outputMappings": {},
+                                    "iteratorMappings": {},
+                                    "title": "PostgreSQL Connector",
+                                    "description": "Connector to connect to a PostgreSQL database server",
+                                    "ref": "git.tibco.com/git/product/ipaas/wi-postgres.git/src/app/PostgreSQL/connector/connection",
+                                    "settings": [
+                                        {
+                                            "name": "name",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Connection Name",
+                                                "visible": true
+                                            },
+                                            "value": "LocalDB"
+                                        },
+                                        {
+                                            "name": "description",
+                                            "type": "string",
+                                            "display": {
+                                                "name": "Description",
+                                                "visible": true
+                                            },
+                                            "value": ""
+                                        },
+                                        {
+                                            "name": "host",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Host",
+                                                "description": "PostgreSQL Database Host name",
+                                                "type": "string",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Host\"]"
+                                        },
+                                        {
+                                            "name": "port",
+                                            "type": "integer",
+                                            "required": true,
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Port\"]",
+                                            "display": {
+                                                "name": "Port",
+                                                "description": "PostgreSQL Database Port",
+                                                "type": "integer",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            }
+                                        },
+                                        {
+                                            "name": "databaseName",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Database Name",
+                                                "description": "Name of the Database",
+                                                "type": "string",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Database_Name\"]"
+                                        },
+                                        {
+                                            "name": "user",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "User",
+                                                "description": "Name of the Database User",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.User\"]"
+                                        },
+                                        {
+                                            "name": "password",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Password",
+                                                "description": "PostgreSQL Database Port",
+                                                "type": "password",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Password\"]"
+                                        }
+                                    ],
+                                    "outputs": [],
+                                    "inputs": [],
+                                    "handler": {
+                                        "settings": []
+                                    },
+                                    "reply": [],
+                                    "s3Prefix": "Tibco",
+                                    "key": "Tibco/PostgreSQL/connector/connection/connector.json",
+                                    "display": {
+                                        "description": "Connector to connect to a PostgreSQL database server",
+                                        "category": "PostgreSQL",
+                                        "visible": true,
+                                        "smallIcon": "icons/ic-postgres-connection@2x.png",
+                                        "largeIcon": "icons/ic-postgres-connection@3x.png"
+                                    },
+                                    "actions": [
+                                        {
+                                            "name": "Connect"
+                                        }
+                                    ],
+                                    "feature": {},
+                                    "propertyMap": {},
+                                    "keyfield": "name",
+                                    "isValid": true,
+                                    "lastUpdatedTime": 1559943517538,
+                                    "createdTime": 1559943517538,
+                                    "user": "flogo",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "9bd48420-896c-11e9-99bb-67644a83e36d",
+                                    "connectorName": " ",
+                                    "connectorDescription": " "
+                                },
+                                "QueryName": "",
+                                "Query": "SELECT * FROM demo;",
+                                "Fields": "[{\"FieldName\":\"first_name\",\"Type\":\"TEXT\",\"Selected\":true,\"Parameter\":false,\"isEditable\":false},{\"FieldName\":\"last_name\",\"Type\":\"TEXT\",\"Selected\":true,\"Parameter\":false,\"isEditable\":false},{\"FieldName\":\"id\",\"Type\":\"INT4\",\"Selected\":true,\"Parameter\":false,\"isEditable\":false},{\"FieldName\":\"company\",\"Type\":\"TEXT\",\"Selected\":true,\"Parameter\":false,\"isEditable\":false}]",
+                                "State": "9bd48420-896c-11e9-99bb-67644a83e36dSELECT * FROM demo;"
+                            },
+                            "schemas": {
+                                "input": {
+                                    "input": {
+                                        "type": "json",
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"parameters\":{\"type\":\"object\",\"properties\":{}}}}",
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"parameters\":{\"type\":\"object\",\"properties\":{}}}}"
+                                    }
+                                },
+                                "output": {
+                                    "Output": {
+                                        "type": "json",
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"first_name\":{\"type\":\"string\"},\"last_name\":{\"type\":\"string\"},\"id\":{\"type\":\"integer\"},\"company\":{\"type\":\"string\"}}}}}}",
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"first_name\":{\"type\":\"string\"},\"last_name\":{\"type\":\"string\"},\"id\":{\"type\":\"integer\"},\"company\":{\"type\":\"string\"}}}}}}"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return",
+                        "name": "Return",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "code": 200,
+                                    "data": {
+                                        "mapping": {
+                                            "records": {
+                                                "@foreach($activity[PostgreSQLQuery].Output.records)": {
+                                                    "=": "$loop"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return1",
+                        "name": "Return1",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "code": 500,
+                                    "data": {
+                                        "records": []
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "headers",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}}"
+                            }
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "code",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "data",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"first_name\":{\"type\":\"string\"},\"last_name\":{\"type\":\"string\"},\"id\":{\"type\":\"number\"},\"company\":{\"type\":\"string\"}}}}}"
+                            }
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"ReceiveHTTPMessage1\",\"properties\":{\"headers\":{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"code\":{\"type\":\"integer\",\"required\":false},\"data\":{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"first_name\":{\"type\":\"string\"},\"last_name\":{\"type\":\"string\"},\"id\":{\"type\":\"number\"},\"company\":{\"type\":\"string\"}}}}}}},\"required\":[]}"
+                    }
+                },
+                "explicitReply": true
+            }
+        },
+        {
+            "id": "flow:Delete",
+            "data": {
+                "name": "Delete",
+                "description": "",
+                "links": [
+                    {
+                        "id": 1,
+                        "from": "LogMessage",
+                        "to": "PostgreSQLDelete",
+                        "type": "expression",
+                        "value": "string.length($flow.queryParams.id) != 0"
+                    },
+                    {
+                        "id": 2,
+                        "from": "PostgreSQLDelete",
+                        "to": "Return2",
+                        "type": "default"
+                    },
+                    {
+                        "id": 3,
+                        "from": "PostgreSQLDelete",
+                        "to": "Return1",
+                        "type": "error"
+                    },
+                    {
+                        "id": 4,
+                        "from": "LogMessage",
+                        "to": "PostgreSQLDelete1",
+                        "type": "expression",
+                        "value": "string.length($flow.queryParams.id) == 0"
+                    },
+                    {
+                        "id": 5,
+                        "from": "PostgreSQLDelete1",
+                        "to": "Return3",
+                        "type": "default"
+                    },
+                    {
+                        "id": 6,
+                        "from": "PostgreSQLDelete1",
+                        "to": "Return4",
+                        "type": "error"
+                    }
+                ],
+                "tasks": [
+                    {
+                        "id": "LogMessage",
+                        "name": "LogMessage",
+                        "activity": {
+                            "ref": "#log",
+                            "input": {
+                                "Log Level": "INFO",
+                                "flowInfo": false,
+                                "message": "=string.concat(\"ID:\", $flow.queryParams.id)"
+                            }
+                        }
+                    },
+                    {
+                        "id": "PostgreSQLDelete",
+                        "name": "PostgreSQLDelete",
+                        "activity": {
+                            "ref": "#delete",
+                            "input": {
+                                "Connection": {
+                                    "type": "flogo:connector",
+                                    "version": "2.0.1",
+                                    "name": "postgresql-connector",
+                                    "hashTags": [],
+                                    "inputMappings": {},
+                                    "outputMappings": {},
+                                    "iteratorMappings": {},
+                                    "title": "PostgreSQL Connector",
+                                    "description": "Connector to connect to a PostgreSQL database server",
+                                    "ref": "git.tibco.com/git/product/ipaas/wi-postgres.git/src/app/PostgreSQL/connector/connection",
+                                    "settings": [
+                                        {
+                                            "name": "name",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Connection Name",
+                                                "visible": true
+                                            },
+                                            "value": "LocalDB"
+                                        },
+                                        {
+                                            "name": "description",
+                                            "type": "string",
+                                            "display": {
+                                                "name": "Description",
+                                                "visible": true
+                                            },
+                                            "value": ""
+                                        },
+                                        {
+                                            "name": "host",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Host",
+                                                "description": "PostgreSQL Database Host name",
+                                                "type": "string",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Host\"]"
+                                        },
+                                        {
+                                            "name": "port",
+                                            "type": "integer",
+                                            "required": true,
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Port\"]",
+                                            "display": {
+                                                "name": "Port",
+                                                "description": "PostgreSQL Database Port",
+                                                "type": "integer",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            }
+                                        },
+                                        {
+                                            "name": "databaseName",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Database Name",
+                                                "description": "Name of the Database",
+                                                "type": "string",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Database_Name\"]"
+                                        },
+                                        {
+                                            "name": "user",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "User",
+                                                "description": "Name of the Database User",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.User\"]"
+                                        },
+                                        {
+                                            "name": "password",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Password",
+                                                "description": "PostgreSQL Database Port",
+                                                "type": "password",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Password\"]"
+                                        }
+                                    ],
+                                    "outputs": [],
+                                    "inputs": [],
+                                    "handler": {
+                                        "settings": []
+                                    },
+                                    "reply": [],
+                                    "s3Prefix": "Tibco",
+                                    "key": "Tibco/PostgreSQL/connector/connection/connector.json",
+                                    "display": {
+                                        "description": "Connector to connect to a PostgreSQL database server",
+                                        "category": "PostgreSQL",
+                                        "visible": true,
+                                        "smallIcon": "icons/ic-postgres-connection@2x.png",
+                                        "largeIcon": "icons/ic-postgres-connection@3x.png"
+                                    },
+                                    "actions": [
+                                        {
+                                            "name": "Connect"
+                                        }
+                                    ],
+                                    "feature": {},
+                                    "propertyMap": {},
+                                    "keyfield": "name",
+                                    "isValid": true,
+                                    "lastUpdatedTime": 1559943517538,
+                                    "createdTime": 1559943517538,
+                                    "user": "flogo",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "9bd48420-896c-11e9-99bb-67644a83e36d",
+                                    "connectorName": " ",
+                                    "connectorDescription": " "
+                                },
+                                "QueryName": "",
+                                "Query": "Delete from demo where id = ?id;",
+                                "Fields": "[{\"FieldName\":\"id\",\"Type\":\"INT4\",\"Selected\":false,\"Parameter\":true,\"isEditable\":false}]",
+                                "State": "9bd48420-896c-11e9-99bb-67644a83e36dDelete from demo where id = ?id;",
+                                "input": {
+                                    "mapping": {
+                                        "parameters": {
+                                            "id": "=number.int64($flow.queryParams.id)"
+                                        }
+                                    }
+                                }
+                            },
+                            "schemas": {
+                                "input": {
+                                    "input": {
+                                        "type": "json",
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"}}}}}",
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"}}}}}"
+                                    }
+                                },
+                                "output": {
+                                    "Output": {
+                                        "type": "json",
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{}}}}}",
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{}}}}}"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return2",
+                        "name": "Return2",
+                        "activity": {
+                            "ref": "#actreturn"
+                        }
+                    },
+                    {
+                        "id": "Return1",
+                        "name": "Return1",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "code": 500,
+                                    "message": "Error deleting record from database"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "PostgreSQLDelete1",
+                        "name": "PostgreSQLDelete1",
+                        "activity": {
+                            "ref": "#delete",
+                            "input": {
+                                "Connection": {
+                                    "type": "flogo:connector",
+                                    "version": "2.0.1",
+                                    "name": "postgresql-connector",
+                                    "hashTags": [],
+                                    "inputMappings": {},
+                                    "outputMappings": {},
+                                    "iteratorMappings": {},
+                                    "title": "PostgreSQL Connector",
+                                    "description": "Connector to connect to a PostgreSQL database server",
+                                    "ref": "git.tibco.com/git/product/ipaas/wi-postgres.git/src/app/PostgreSQL/connector/connection",
+                                    "settings": [
+                                        {
+                                            "name": "name",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Connection Name",
+                                                "visible": true
+                                            },
+                                            "value": "LocalDB"
+                                        },
+                                        {
+                                            "name": "description",
+                                            "type": "string",
+                                            "display": {
+                                                "name": "Description",
+                                                "visible": true
+                                            },
+                                            "value": ""
+                                        },
+                                        {
+                                            "name": "host",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Host",
+                                                "description": "PostgreSQL Database Host name",
+                                                "type": "string",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Host\"]"
+                                        },
+                                        {
+                                            "name": "port",
+                                            "type": "integer",
+                                            "required": true,
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Port\"]",
+                                            "display": {
+                                                "name": "Port",
+                                                "description": "PostgreSQL Database Port",
+                                                "type": "integer",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            }
+                                        },
+                                        {
+                                            "name": "databaseName",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Database Name",
+                                                "description": "Name of the Database",
+                                                "type": "string",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Database_Name\"]"
+                                        },
+                                        {
+                                            "name": "user",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "User",
+                                                "description": "Name of the Database User",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.User\"]"
+                                        },
+                                        {
+                                            "name": "password",
+                                            "type": "string",
+                                            "required": true,
+                                            "display": {
+                                                "name": "Password",
+                                                "description": "PostgreSQL Database Port",
+                                                "type": "password",
+                                                "visible": true,
+                                                "appPropertySupport": true
+                                            },
+                                            "value": "=$property[\"PostgreSQL.LocalDB.Password\"]"
+                                        }
+                                    ],
+                                    "outputs": [],
+                                    "inputs": [],
+                                    "handler": {
+                                        "settings": []
+                                    },
+                                    "reply": [],
+                                    "s3Prefix": "Tibco",
+                                    "key": "Tibco/PostgreSQL/connector/connection/connector.json",
+                                    "display": {
+                                        "description": "Connector to connect to a PostgreSQL database server",
+                                        "category": "PostgreSQL",
+                                        "visible": true,
+                                        "smallIcon": "icons/ic-postgres-connection@2x.png",
+                                        "largeIcon": "icons/ic-postgres-connection@3x.png"
+                                    },
+                                    "actions": [
+                                        {
+                                            "name": "Connect"
+                                        }
+                                    ],
+                                    "feature": {},
+                                    "propertyMap": {},
+                                    "keyfield": "name",
+                                    "isValid": true,
+                                    "lastUpdatedTime": 1559943517538,
+                                    "createdTime": 1559943517538,
+                                    "user": "flogo",
+                                    "subscriptionId": "flogo_sbsc",
+                                    "id": "9bd48420-896c-11e9-99bb-67644a83e36d",
+                                    "connectorName": " ",
+                                    "connectorDescription": " "
+                                },
+                                "QueryName": "",
+                                "Query": "DELETE FROM demo;",
+                                "Fields": "[]",
+                                "State": "9bd48420-896c-11e9-99bb-67644a83e36dDELETE FROM demo;"
+                            },
+                            "schemas": {
+                                "input": {
+                                    "input": {
+                                        "type": "json",
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"parameters\":{\"type\":\"object\",\"properties\":{}}}}",
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"parameters\":{\"type\":\"object\",\"properties\":{}}}}"
+                                    }
+                                },
+                                "output": {
+                                    "Output": {
+                                        "type": "json",
+                                        "value": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{}}}}}",
+                                        "fe_metadata": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"definitions\":{},\"properties\":{\"records\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{}}}}}"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return3",
+                        "name": "Return3",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "code": 200,
+                                    "message": "All records successfully deleted"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "id": "Return4",
+                        "name": "Return4",
+                        "activity": {
+                            "ref": "#actreturn",
+                            "settings": {
+                                "mappings": {
+                                    "code": 500,
+                                    "message": "Error deleting records from database "
+                                }
+                            }
+                        }
+                    }
+                ],
+                "metadata": {
+                    "input": [
+                        {
+                            "name": "queryParams",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"id\":{\"type\":\"string\"}}"
+                            }
+                        },
+                        {
+                            "name": "headers",
+                            "type": "object",
+                            "schema": {
+                                "type": "json",
+                                "value": "{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}}"
+                            }
+                        }
+                    ],
+                    "output": [
+                        {
+                            "name": "code",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "message",
+                            "type": "string"
+                        }
+                    ],
+                    "fe_metadata": {
+                        "input": "{\"type\":\"object\",\"title\":\"ReceiveHTTPMessage2\",\"properties\":{\"queryParams\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"}},\"required\":[]},\"headers\":{\"type\":\"object\",\"properties\":{\"Accept\":{\"type\":\"string\",\"visible\":false},\"Accept-Charset\":{\"type\":\"string\",\"visible\":false},\"Accept-Encoding\":{\"type\":\"string\",\"visible\":false},\"Content-Type\":{\"type\":\"string\",\"visible\":false},\"Content-Length\":{\"type\":\"string\",\"visible\":false},\"Connection\":{\"type\":\"string\",\"visible\":false},\"Cookie\":{\"type\":\"string\",\"visible\":false},\"Pragma\":{\"type\":\"string\",\"visible\":false}},\"required\":[]}}}",
+                        "output": "{\"type\":\"object\",\"title\":\"Inputs\",\"properties\":{\"code\":{\"type\":\"integer\",\"required\":false},\"message\":{\"type\":\"string\",\"required\":false}},\"required\":[]}"
+                    }
+                },
+                "explicitReply": true
+            }
+        }
+    ],
+    "properties": [
+        {
+            "name": "PostgreSQL.LocalDB.Host",
+            "type": "string",
+            "value": "localhost"
+        },
+        {
+            "name": "PostgreSQL.LocalDB.Port",
+            "type": "float64",
+            "value": 54320
+        },
+        {
+            "name": "PostgreSQL.LocalDB.Database_Name",
+            "type": "string",
+            "value": "tn2019"
+        },
+        {
+            "name": "PostgreSQL.LocalDB.User",
+            "type": "string",
+            "value": "postgres"
+        },
+        {
+            "name": "PostgreSQL.LocalDB.Password",
+            "type": "string",
+            "value": "SECRET:oYNirk71/ibY8YoFrAYKhLoWYmzlDDsd"
+        }
+    ],
+    "contrib": "W3sicmVmIjoiZ2l0LnRpYmNvLmNvbS9naXQvcHJvZHVjdC9pcGFhcy93aS1jb250cmliLmdpdC9jb250cmlidXRpb25zL0dlbmVyYWwiLCJzM2xvY2F0aW9uIjoiVGliY28vR2VuZXJhbCJ9LHsicmVmIjoiZ2l0LnRpYmNvLmNvbS9naXQvcHJvZHVjdC9pcGFhcy93aS1wb3N0Z3Jlcy5naXQvc3JjL2FwcC9Qb3N0Z3JlU1FMIiwiczNsb2NhdGlvbiI6IlRpYmNvL1Bvc3RncmVTUUwifV0=",
+    "fe_metadata": "UEsDBAoAAAAIAD22x06rqSRGFQAAABMAAAAIAAAAYXBwLmpzb26rViopykxPTy1yy8kvL1ayio6tBQBQSwECFAAKAAAACAA9tsdOq6kkRhUAAAATAAAACAAAAAAAAAAAAAAAAAAAAAAAYXBwLmpzb25QSwUGAAAAAAEAAQA2AAAAOwAAAAAA"
+}
