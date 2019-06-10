@@ -18,7 +18,7 @@
             "name": "GraphQLTrigger",
             "description": "Get all posts by user",
             "settings": {
-                "port": "=$property[\"PORT\"]",
+                "port": 8080,
                 "path": "/graphql",
                 "secureConnection": false,
                 "serverKey": "",
